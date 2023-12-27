@@ -62,6 +62,9 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     running = True
 
+    from hands import Hands
+    hands = Hands()
+
     game = Game()
     game.render(screen)
     pygame.display.flip()
@@ -74,19 +77,9 @@ if __name__ == '__main__':
                 game.render(screen)
 
             elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_a]:
-                    keys = pygame.key.get_pressed()
-                    if keys[pygame.K_l]:
-                        print('две кнопки нажаты')
-
-                if keys[pygame.K_l]:
-                    keys = pygame.key.get_pressed()
-                    if keys[pygame.K_a]:
-                        print('две кнопки')
+                if event.key == pygame.K_a:
+                    hands.right_hand.attack()
 
             clock.tick(60)
             pygame.display.flip()
 
-
-a
