@@ -72,5 +72,21 @@ if __name__ == '__main__':
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 game.render(screen)
+
+            elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_a]:
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_l]:
+                        print('две кнопки нажаты')
+
+                if keys[pygame.K_l]:
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_a]:
+                        print('две кнопки')
+
             clock.tick(60)
             pygame.display.flip()
+
+
+a
