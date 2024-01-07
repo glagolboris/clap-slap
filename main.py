@@ -14,6 +14,7 @@ class Game:
         from hands import Hands
         self.hands = Hands()
 
+
     def fighter_defender(self):
         if not self.players['fighter']:
             fighter = random.randint(1, 2)
