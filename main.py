@@ -34,9 +34,9 @@ while running:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 game.render(screen)
 
-            elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    hands.right_hand.attack()
+                    hands.right_hand.attack(screen)
 
         elif menu.SETTINGS_STARTED:
             if event.type == pygame.QUIT:

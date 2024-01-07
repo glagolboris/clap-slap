@@ -1,9 +1,9 @@
 import pygame
 import random
-from menu import MainMenu as menu_mainMenu
+from menu import MainMenu as menu_mainmenu
 from menu import Settings as menu_settings
 from menu import Start as menu_start
-
+from settings import Back
 
 class Game:
     players = {'fighter': None}
@@ -13,7 +13,6 @@ class Game:
     def __init__(self):
         from hands import Hands
         self.hands = Hands()
-
 
     def fighter_defender(self, screen):
         if not self.players['fighter']:
@@ -28,15 +27,11 @@ class Game:
                 pygame.draw.rect(screen, pygame.Color('#4CD4B0'), (0, 0, 350, 700), 350)
                 self.players['fighter'] = self.RIGHT_PLAYER
 
-
-
         else:
             if self.players['fighter'] == self.LEFT_PLAYER:
                 pygame.draw.rect(screen, pygame.Color('#F24D16'), (350, 0, 350, 700), 350)
                 pygame.draw.rect(screen, pygame.Color('#4CD4B0'), (0, 0, 350, 700), 350)
                 self.players['fighter'] = self.RIGHT_PLAYER
-
-
             else:
                 pygame.draw.rect(screen, pygame.Color('#F24D16'), (0, 0, 350, 700), 350)
                 pygame.draw.rect(screen, pygame.Color('#4CD4B0'), (350, 0, 350, 700), 350)
@@ -45,14 +40,13 @@ class Game:
     def render(self, screen):
         screen.fill(pygame.Color('black'))
         self.fighter_defender(screen)
-        self.hands.all_sprites.update()
+        self.hands.all_sprites_l.update()
+        self.hands.all_sprites_r.update()
 
         if self.players['fighter'] == self.LEFT_PLAYER:
-            self.hands.left_hand.build()
-            self.hands.right_hand.build()
+            self.hands.all_sprites_l.draw(screen)
+            self.hands.all_sprites_r.draw(screen)
 
-        if self.players['fighter'] == self.RIGHT_PLAYER:
-            self.hands.right_hand.build()
-            self.hands.left_hand.build()
-
-        self.hands.all_sprites.draw(screen)
+        elif self.players['fighter'] == self.RIGHT_PLAYER:
+            self.hands.all_sprites_r.draw(screen)
+            self.hands.all_sprites_l.draw(screen)

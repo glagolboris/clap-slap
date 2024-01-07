@@ -4,11 +4,12 @@ clock = pygame.time.Clock()
 
 class Hands:
     def __init__(self):
-        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites_l = pygame.sprite.Group()
+        self.all_sprites_r = pygame.sprite.Group()
         self.left_hand = LeftHand()
         self.right_hand = RightHand()
-        self.all_sprites.add(self.left_hand)
-        self.all_sprites.add(self.right_hand)
+        self.all_sprites_l.add(self.left_hand)
+        self.all_sprites_r.add(self.right_hand)
 
 
 class LeftHand(pygame.sprite.Sprite):
@@ -18,18 +19,16 @@ class LeftHand(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.image = pygame.transform.rotate(self.image, 270)
         self.image = pygame.transform.scale(self.image, (600, 400))
-
-    def build(self):
         self.rect.x = -210
         self.rect.y = 190
 
-    def attack(self):
+    def attack(self, screen):
         for i in range(5):
             if i < 2:
                 self.rect.x += 105
             elif i > 2:
                 self.rect.x -= 105
-            clock.tick(60)
+
 
 
 class RightHand(pygame.sprite.Sprite):
@@ -39,16 +38,16 @@ class RightHand(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.image = pygame.transform.rotate(self.image, 90)
         self.image = pygame.transform.scale(self.image, (600, 400))
-
-    def build(self):
         self.rect.x = 310
         self.rect.y = 170
 
-    def attack(self):
+    def attack(self, screen):
+        from main import Game
         for i in range(5):
             if i < 2:
-                self.rect.x -= 105
+                self.rect.x = self.rect.x - 105
             elif i > 2:
                 self.rect.x += 105
-            clock.tick(60)
+            print('at', self.rect.x, self.rect.y)
+            Game().render(screen)
         pygame.display.flip()
