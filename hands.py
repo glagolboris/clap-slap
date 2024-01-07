@@ -2,6 +2,7 @@ import pygame
 
 clock = pygame.time.Clock()
 
+
 class Hands:
     def __init__(self):
         self.all_sprites_l = pygame.sprite.Group()
@@ -28,7 +29,6 @@ class LeftHand(pygame.sprite.Sprite):
                 self.rect.x += 105
             elif i > 2:
                 self.rect.x -= 105
-
 
 
 class RightHand(pygame.sprite.Sprite):

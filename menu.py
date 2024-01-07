@@ -1,5 +1,6 @@
 import pygame
 
+
 class Logo(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -13,6 +14,7 @@ class Logo(pygame.sprite.Sprite):
 class Buttons:
     pass
 
+
 class Start(Buttons, pygame.sprite.Sprite):
     def __init__(self):
         super(Start, self).__init__()
@@ -21,6 +23,7 @@ class Start(Buttons, pygame.sprite.Sprite):
         self.rect.y += 300
         self.rect.x += 150
 
+
 class Settings(Buttons, pygame.sprite.Sprite):
     def __init__(self):
         super(Settings, self).__init__()
@@ -28,6 +31,7 @@ class Settings(Buttons, pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y += 400
         self.rect.x += 150
+
 
 class MainMenu:
     GAME_STARTED = False
@@ -44,9 +48,6 @@ class MainMenu:
 
         sttngs_bttn = Settings()
         self.all_sprites.add(sttngs_bttn)
-
-
-
 
     def render(self, screen):
         screen.fill(pygame.Color('#7D1424'))
