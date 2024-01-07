@@ -1,6 +1,6 @@
 import pygame
 import random
-from menu import MainMenu as menu_mainmenu
+from menu import MainMenu as menu_mainMenu
 from menu import Settings as menu_settings
 from menu import Start as menu_start
 from settings import Back
@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
 
 
-    menu = menu_mainmenu()
+    menu = menu_mainMenu()
 
     game = Game()
     menu.render(screen)
@@ -91,7 +91,7 @@ if __name__ == '__main__':
                     if event.key == pygame.K_a:
                         hands.right_hand.attack()
 
-            if menu.SETTINGS_STARTED:
+            elif menu.SETTINGS_STARTED:
                 if event.type == pygame.QUIT:
                     running = False
 
