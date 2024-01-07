@@ -1,6 +1,9 @@
 import pygame
 import random
-
+from menu import MainMenu as menu_mainmenu
+from menu import Settings as menu_settings
+from menu import Start as menu_start
+from settings import Back
 
 class Game:
     players = {'fighter': None}
@@ -66,9 +69,9 @@ if __name__ == '__main__':
 
     hands = Hands()
 
-    from menu import MainMenu, Start
 
-    menu = MainMenu()
+
+    menu = menu_mainmenu()
 
     game = Game()
     menu.render(screen)
@@ -87,14 +90,33 @@ if __name__ == '__main__':
                     if event.key == pygame.K_a:
                         hands.right_hand.attack()
 
+            if menu.SETTINGS_STARTED:
+                if event.type == pygame.QUIT:
+                    running = False
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        if Back().rect.collidepoint(event.pos):
+                            menu.SETTINGS_STARTED = False
+                            menu.render(screen)
+
             else:
                 if event.type == pygame.QUIT:
-                    running = not running
+                    running = False
 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if Start().rect.collidepoint(event.pos):
-                        menu.GAME_STARTED = True
-                        game.render(screen)
+                    if event.button == 1:
+                        if menu_start().rect.collidepoint(event.pos):
+                            menu.GAME_STARTED = True
+                            game.render(screen)
+
+                        if menu_settings().rect.collidepoint(event.pos):
+                            import settings
+                            settings.Settings().render(screen)
+                            menu.SETTINGS_STARTED = True
+
+
+
 
             clock.tick(60)
             pygame.display.flip()

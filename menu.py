@@ -21,9 +21,17 @@ class Start(Buttons, pygame.sprite.Sprite):
         self.rect.y += 300
         self.rect.x += 150
 
+class Settings(Buttons, pygame.sprite.Sprite):
+    def __init__(self):
+        super(Settings, self).__init__()
+        self.image = pygame.image.load('data/buttons/settings.png')
+        self.rect = self.image.get_rect()
+        self.rect.y += 400
+        self.rect.x += 150
 
 class MainMenu:
     GAME_STARTED = False
+    SETTINGS_STARTED = False
 
     def __init__(self):
         self.all_sprites = pygame.sprite.Group()
@@ -33,6 +41,9 @@ class MainMenu:
 
         start_bttn = Start()
         self.all_sprites.add(start_bttn)
+
+        sttngs_bttn = Settings()
+        self.all_sprites.add(sttngs_bttn)
 
 
 
