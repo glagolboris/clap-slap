@@ -15,7 +15,7 @@ class Game:
         self.hands = Hands()
 
 
-    def fighter_defender(self):
+    def fighter_defender(self, screen):
         if not self.players['fighter']:
             fighter = random.randint(1, 2)
             if fighter == 1:
@@ -44,7 +44,7 @@ class Game:
 
     def render(self, screen):
         screen.fill(pygame.Color('black'))
-        self.fighter_defender()
+        self.fighter_defender(screen)
         self.hands.all_sprites.update()
 
         if self.players['fighter'] == self.LEFT_PLAYER:

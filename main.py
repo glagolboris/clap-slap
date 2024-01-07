@@ -4,8 +4,7 @@ from menu import MainMenu as menu_mainMenu
 from menu import Settings as menu_settings
 from menu import Start as menu_start
 from settings import Back
-
-
+from game import Game
 
 pygame.init()
 size = width, height = 700, 700
