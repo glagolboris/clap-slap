@@ -63,23 +63,38 @@ if __name__ == '__main__':
     running = True
 
     from hands import Hands
+
     hands = Hands()
 
+    from menu import MainMenu, Start
+
+    menu = MainMenu()
+
     game = Game()
-    game.render(screen)
+    menu.render(screen)
+    # game.render(screen)
     pygame.display.flip()
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+            if menu.GAME_STARTED:
+                if event.type == pygame.QUIT:
+                    running = False
 
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                game.render(screen)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    game.render(screen)
 
-            elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
-                if event.key == pygame.K_a:
-                    hands.right_hand.attack()
+                elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+                    if event.key == pygame.K_a:
+                        hands.right_hand.attack()
+
+            else:
+                if event.type == pygame.QUIT:
+                    running = not running
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if Start().rect.collidepoint(event.pos):
+                        menu.GAME_STARTED = True
+                        game.render(screen)
 
             clock.tick(60)
             pygame.display.flip()
-
