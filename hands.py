@@ -40,14 +40,26 @@ class RightHand(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (600, 400))
         self.rect.x = 310
         self.rect.y = 170
+        self.attackCount = 10
 
-    def attack(self, screen):
-        from main import Game
-        for i in range(5):
-            if i < 2:
-                self.rect.x = self.rect.x - 105
-            elif i > 2:
-                self.rect.x += 105
-            print('at', self.rect.x, self.rect.y)
-            Game().render(screen)
+    def attack(self, Is, hands, screen):
+        if Is:
+            if self.attackCount > 0:
+                    self.rect.x -= 21
+                    self.attackCount -= 1
+            elif self.attackCount < 0:
+                    self.rect.x += 21
+                    self.attackCount -= 1
+            else:
+                self.attackCount -= 1
+            print(self.attackCount)
+            print(self.rect.x)
+        else:
+            self.attackCount = 10
+        hands.all_sprites_r.update()
+        hands.all_sprites_r.draw(screen)
         pygame.display.flip()
+
+
+    def attackIs(self):
+        return self.attackCount

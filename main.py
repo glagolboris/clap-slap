@@ -17,6 +17,7 @@ game = Game()
 menu.render(screen)
 # game.render(screen)
 pygame.display.flip()
+isRHandAtt = False
 while running:
     for event in pygame.event.get():
         if menu.GAME_STARTED:
@@ -26,7 +27,14 @@ while running:
                 game.render(screen)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    hands.right_hand.attack(screen)
+                    isRHandAtt = True
+                    hands.right_hand.attack(True, hands, screen)
+                    game.render(screen)
+            if hands.right_hand.attackIs() >= -10 and isRHandAtt:
+                hands.right_hand.attack(True, hands, screen)
+            else:
+                hands.right_hand.attack(False, hands, screen)
+                isRHandAtt = False
         elif menu.SETTINGS_STARTED:
             if event.type == pygame.QUIT:
                 running = False
