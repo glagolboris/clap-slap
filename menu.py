@@ -11,11 +11,11 @@ class Logo(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (600, 400))
 
 
-class Buttons:
+class Sett_Buttons:
     pass
 
 
-class Start(Buttons, pygame.sprite.Sprite):
+class Start(Sett_Buttons, pygame.sprite.Sprite):
     def __init__(self):
         super(Start, self).__init__()
         self.image = pygame.image.load('data/buttons/start.png')
@@ -24,7 +24,7 @@ class Start(Buttons, pygame.sprite.Sprite):
         self.rect.x += 150
 
 
-class Settings(Buttons, pygame.sprite.Sprite):
+class Settings(Sett_Buttons, pygame.sprite.Sprite):
     def __init__(self):
         super(Settings, self).__init__()
         self.image = pygame.image.load('data/buttons/settings.png')
@@ -36,6 +36,7 @@ class Settings(Buttons, pygame.sprite.Sprite):
 class MainMenu:
     GAME_STARTED = False
     SETTINGS_STARTED = False
+    TO_MENU = True
 
     def __init__(self):
         self.all_sprites = pygame.sprite.Group()
@@ -53,4 +54,3 @@ class MainMenu:
         screen.fill(pygame.Color('#7D1424'))
         self.all_sprites.update()
         self.all_sprites.draw(screen)
-
