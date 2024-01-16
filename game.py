@@ -118,6 +118,32 @@ class Fake_Defends:
         self.shackles_sprites.draw(screen)
         pygame.display.flip()
 
+class OnRoll(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('data/on_a_roll.png')
+        self.rect = self.image.get_rect()
+
+class Roll:
+    def __init__(self):
+        self.roll_group = pygame.sprite.Group()
+
+        self.roll = OnRoll()
+        self.roll_group.add(self.roll)
+
+    def render(self, game, screen):
+        print(True)
+        self.roll.rect.y = 150
+
+        if game.players['fighter'] == game.LEFT_PLAYER:
+            self.roll.rect.x = 30
+
+        elif game.players['fighter'] == game.RIGHT_PLAYER:
+            self.roll.rect.x = 370
+
+        self.roll_group.update()
+        self.roll_group.draw(screen)
+        pygame.display.flip()
 
 class Game:
     LEFT_PLAYER = 'left_player'
@@ -205,6 +231,13 @@ class Game:
                     self.hands.all_sprites_r.draw(screen)
                     self.hands.all_sprites_l.draw(screen)
 
-    def render(self, screen, attack_change=True):
+    def render(self, screen, attack_change=True, game=None):
         screen.fill(pygame.Color('black'))
         self.fighter_defender(screen, attack_change)
+
+        if game:
+            self.if_game(game, screen)
+
+    def if_game(self, game, screen):
+        if game.TRUE_ATTACKS >= 3:
+            Roll().render(game, screen)

@@ -64,3 +64,11 @@ class Bell:
 
     def play(self):
         self.sound.play()
+
+
+class Bang:
+    def __init__(self):
+        self.sound = pygame.mixer.Sound("data/audio/bang.wav")
+
+    def play(self):
+        self.sound.play()

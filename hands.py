@@ -1,6 +1,7 @@
 import pygame
 from game import Game
 import audio
+import game as gm
 
 clock = pygame.time.Clock()
 
@@ -28,21 +29,27 @@ class Hands:
         self.all_sprites_r.draw(screen)
         self.all_sprites_l.draw(screen)
         Game().sprites_render(screen)
+
+
         pygame.display.flip()
         clock.tick(60)
 
-    def attack_and_defend(self, screen, who_attacked):
+    def attack_and_defend(self, screen, who_attacked, game=None):
         if who_attacked == 'left_player':
             audio.Woosh2().play()
             for _ in range(10):
                 self.left_hand.rect.x += 21
                 self.right_hand.rect.x += 21
                 self.render(screen, role=who_attacked)
+                if game:
+                    Game().if_game(game, screen)
 
             for __ in range(10):
                 self.left_hand.rect.x -= 21
                 self.right_hand.rect.x -= 21
                 self.render(screen, role=who_attacked)
+                if game:
+                    Game().if_game(game, screen)
 
         if who_attacked == 'right_player':
             audio.Woosh2().play()
@@ -50,11 +57,16 @@ class Hands:
                 self.left_hand.rect.x -= 21
                 self.right_hand.rect.x -= 21
                 self.render(screen, role=who_attacked)
+                if game:
+                    Game().if_game(game, screen)
+
 
             for __ in range(10):
                 self.left_hand.rect.x += 21
                 self.right_hand.rect.x += 21
                 self.render(screen, role=who_attacked)
+                if game:
+                    Game().if_game(game, screen)
 
 
 class LeftHand(pygame.sprite.Sprite, Hands):
@@ -67,7 +79,7 @@ class LeftHand(pygame.sprite.Sprite, Hands):
         self.rect.x = -210
         self.rect.y = 190
 
-    def render(self, screen, hands, role):
+    def render(self, screen, hands, role, game=None):
         hands.all_sprites_l.update()
         screen.fill('black')
 
@@ -81,28 +93,32 @@ class LeftHand(pygame.sprite.Sprite, Hands):
         hands.all_sprites_r.draw(screen)
         hands.all_sprites_l.draw(screen)
         Game().sprites_render(screen)
+
+        if game:
+            Game().if_game(game, screen)
+
         pygame.display.flip()
         clock.tick(60)
 
-    def attack(self, hands, screen):
+    def attack(self, hands, screen, game=None):
         audio.Slap().play()
         for _ in range(10):
             self.rect.x += 21
-            self.render(screen, hands, role='attack')
+            self.render(screen, hands, role='attack', game=game)
 
         for __ in range(10):
             self.rect.x -= 21
-            self.render(screen, hands, role='attack')
+            self.render(screen, hands, role='attack', game=game)
 
-    def defend(self, hands, screen):
+    def defend(self, hands, screen, game=None):
         audio.Woosh1().play()
         for _ in range(10):
             self.rect.x -= 21
-            self.render(screen, hands, role='defend')
+            self.render(screen, hands, role='defend', game=game)
 
         for __ in range(10):
             self.rect.x += 21
-            self.render(screen, hands, role='defend')
+            self.render(screen, hands, role='defend', game=game)
 
 
 class RightHand(pygame.sprite.Sprite, Hands):
@@ -116,7 +132,7 @@ class RightHand(pygame.sprite.Sprite, Hands):
         self.rect.y = 170
         self.attackCount = 10
 
-    def render(self, screen, hands, role):
+    def render(self, screen, hands, role, game=None):
         hands.all_sprites_r.update()
         screen.fill('black')
         if role == 'attack':
@@ -128,26 +144,30 @@ class RightHand(pygame.sprite.Sprite, Hands):
         hands.all_sprites_l.draw(screen)
         hands.all_sprites_r.draw(screen)
         Game().sprites_render(screen)
+
+        if game:
+            Game().if_game(game, screen)
+
         pygame.display.flip()
         clock.tick(60)
 
-    def attack(self, hands, screen):
+    def attack(self, hands, screen, game=None):
         audio.Slap().play()
 
         for _ in range(10):
             self.rect.x -= 21
-            self.render(screen, hands, role='attack')
+            self.render(screen, hands, role='attack', game=game)
 
         for __ in range(10):
             self.rect.x += 21
-            self.render(screen, hands, role='attack')
+            self.render(screen, hands, role='attack', game=game)
 
-    def defend(self, hands, screen):
+    def defend(self, hands, screen, game=None):
         audio.Woosh1().play()
         for _ in range(10):
             self.rect.x += 21
-            self.render(screen, hands, role='defend')
+            self.render(screen, hands, role='defend', game=game)
 
         for __ in range(10):
             self.rect.x -= 21
-            self.render(screen, hands, role='defend')
+            self.render(screen, hands, role='defend', game=game)

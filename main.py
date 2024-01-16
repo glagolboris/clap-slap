@@ -20,8 +20,10 @@ hands = Hands()
 menu = menu_mainMenu()
 
 from game import Fake_Defends
-
 fd = Fake_Defends()
+
+from game import Roll
+roll = Roll()
 # game.render(screen)
 pygame.display.flip()
 last_key_time = 0
@@ -52,13 +54,16 @@ def process_keys(events):
                 game.FAKE_DEFENDS = 0
                 game.TRUE_ATTACKS = 0
                 hands.attack_and_defend(screen, game.players['fighter'])
-                game.render(screen)
+                game.render(screen, game=game)
 
             else:
                 if game.players['fighter'] == game.RIGHT_PLAYER:
-                    hands.right_hand.attack(hands, screen)
-                    if game.TRUE_ATTACKS == 3:
+                    hands.right_hand.attack(hands, screen, game=game)
+                    if game.TRUE_ATTACKS >= 3:
+                        roll.render(game, screen)
                         game.SCORES[game.RIGHT_PLAYER] += 2
+                        game.TRUE_ATTACKS += 1
+
 
                     else:
                         game.TRUE_ATTACKS += 1
@@ -67,23 +72,23 @@ def process_keys(events):
                     game.FAKE_DEFENDS = 0
 
                 if game.players['fighter'] == game.LEFT_PLAYER:
-                    hands.left_hand.attack(hands, screen)
-                    if game.TRUE_ATTACKS == 3:
+                    hands.left_hand.attack(hands, screen, game=game)
+                    if game.TRUE_ATTACKS >= 3:
                         game.SCORES[game.LEFT_PLAYER] += 2
+                        game.TRUE_ATTACKS += 1
 
                     else:
                         game.TRUE_ATTACKS += 1
                         game.SCORES[game.LEFT_PLAYER] += 1
 
-                    game.FAKE_DEFENDS = 0
-
 
 
         elif pygame.K_RSHIFT in current_keys:
             if game.players['fighter'] == game.RIGHT_PLAYER:
-                hands.right_hand.attack(hands, screen)
+                hands.right_hand.attack(hands, screen, game=game)
                 if game.TRUE_ATTACKS == 3:
                     game.SCORES[game.RIGHT_PLAYER] += 2
+                    game.TRUE_ATTACKS += 1
 
                 else:
                     game.TRUE_ATTACKS += 1
@@ -91,18 +96,23 @@ def process_keys(events):
 
                 game.FAKE_DEFENDS = 0
 
+                if game.TRUE_ATTACKS == 3:
+                    roll.render(game, screen)
+                    audio.Bang().play()
+
             else:
                 if game.FAKE_DEFENDS < 3:
-                    hands.right_hand.defend(hands, screen)
+                    hands.right_hand.defend(hands, screen, game=game)
                     game.FAKE_DEFENDS += 1
                     fd.render(game, screen)
 
 
         elif pygame.K_LSHIFT in current_keys:
             if game.players['fighter'] == game.LEFT_PLAYER:
-                hands.left_hand.attack(hands, screen)
-                if game.TRUE_ATTACKS == 3:
+                hands.left_hand.attack(hands, screen, game=game)
+                if game.TRUE_ATTACKS >= 3:
                     game.SCORES[game.LEFT_PLAYER] += 2
+                    game.TRUE_ATTACKS += 1
 
                 else:
                     game.TRUE_ATTACKS += 1
@@ -110,9 +120,13 @@ def process_keys(events):
 
                 game.FAKE_DEFENDS = 0
 
+                if game.TRUE_ATTACKS == 3:
+                    roll.render(game, screen)
+                    audio.Bang().play()
+
             else:
                 if game.FAKE_DEFENDS < 3:
-                    hands.left_hand.defend(hands, screen)
+                    hands.left_hand.defend(hands, screen, game=game)
                     game.FAKE_DEFENDS += 1
                     fd.render(game, screen)
 
@@ -143,7 +157,7 @@ while running:
                             audio.Game().play()
                             game.PAUSED = False
                             screen.fill('black')
-                            game.render(screen, attack_change=False)
+                            game.render(screen, attack_change=False, game=game)
                             if game.FAKE_DEFENDS >= 3:
                                 fd.render(game, screen)
                             pygame.display.flip()
@@ -152,9 +166,7 @@ while running:
                             audio.Clicked().play()
                             audio.Menu().play()
                             menu.GAME_STARTED = False
-                            game.PAUSED = False
-                            game.players['fighter'] = None
-                            game.SCORES = {game.LEFT_PLAYER: 0, game.RIGHT_PLAYER: 0}
+                            game.reset(menu)
                             menu.TO_MENU = True
                             screen.fill('black')
 
@@ -187,7 +199,7 @@ while running:
                         audio.Clicked().play()
                         menu.GAME_STARTED = True
                         menu.TO_MENU = False
-                        game.render(screen)
+                        game.render(screen, game=game)
                         audio.Menu().stop()
                         audio.Game().play()
                     if menu_settings().rect.collidepoint(event.pos):
@@ -204,7 +216,6 @@ while running:
     if menu.GAME_STARTED and not game.PAUSED:
         if game.SCORES[game.LEFT_PLAYER] < 10 and game.SCORES[game.RIGHT_PLAYER] < 10:
             process_keys(events)
-            print(game.SCORES)
 
         else:
             game.reset(menu)
