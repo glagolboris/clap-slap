@@ -46,9 +46,18 @@ class Woosh1:
     def play(self):
         self.sound.play()
 
+
 class Woosh2:
     def __init__(self):
         self.sound = pygame.mixer.Sound("data/audio/woosh2.wav")
+
+    def play(self):
+        self.sound.play()
+
+
+class Bell:
+    def __init__(self):
+        self.sound = pygame.mixer.Sound("data/audio/bell.mp3")
 
     def play(self):
         self.sound.play()

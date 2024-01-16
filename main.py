@@ -18,6 +18,8 @@ game = Game()
 hands = Hands()
 menu = menu_mainMenu()
 
+from game import Fake_Defends
+fd = Fake_Defends()
 # game.render(screen)
 pygame.display.flip()
 last_key_time = 0
@@ -44,25 +46,51 @@ def process_keys(events):
 
     if current_time - last_key_time >= key_delay:
         if pygame.K_LSHIFT in current_keys and pygame.K_RSHIFT in current_keys:
+            game.FAKE_DEFENDS = 0
+            game.TRUE_ATTACKS = 0
             hands.attack_and_defend(screen, game.players['fighter'])
             game.render(screen)
+
 
 
         elif pygame.K_RSHIFT in current_keys:
             if game.players['fighter'] == game.RIGHT_PLAYER:
                 hands.right_hand.attack(hands, screen)
-                game.SCORES[game.RIGHT_PLAYER] += 1
+                if game.TRUE_ATTACKS == 3:
+                    game.SCORES[game.RIGHT_PLAYER] += 2
+
+                else:
+                    game.TRUE_ATTACKS += 1
+                    game.SCORES[game.RIGHT_PLAYER] += 1
+
+                game.FAKE_DEFENDS = 0
 
             else:
-                hands.right_hand.defend(hands, screen)
+                if game.FAKE_DEFENDS < 3:
+                    hands.right_hand.defend(hands, screen)
+                    game.FAKE_DEFENDS += 1
+                    fd.render(game, screen)
+
 
         elif pygame.K_LSHIFT in current_keys:
             if game.players['fighter'] == game.LEFT_PLAYER:
                 hands.left_hand.attack(hands, screen)
-                game.SCORES[game.LEFT_PLAYER] += 1
+                if game.TRUE_ATTACKS == 3:
+                    game.SCORES[game.LEFT_PLAYER] += 2
+
+                else:
+                    game.TRUE_ATTACKS += 1
+                    game.SCORES[game.LEFT_PLAYER] += 1
+
+                game.FAKE_DEFENDS = 0
 
             else:
-                hands.left_hand.defend(hands, screen)
+                if game.FAKE_DEFENDS < 3:
+                    hands.left_hand.defend(hands, screen)
+                    game.FAKE_DEFENDS += 1
+                    fd.render(game, screen)
+
+
 
         last_key_time = current_time
 
@@ -70,7 +98,6 @@ while running:
     events = pygame.event.get()
     for event in events:
         if menu.GAME_STARTED:
-            print(1)
             if event.type == pygame.QUIT:
                 running = False
 
@@ -127,7 +154,7 @@ while running:
             pygame.display.flip()
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if menu_start().rect.collidepoint(event.pos):
                         audio.Clicked().play()
@@ -147,6 +174,14 @@ while running:
         pygame.display.flip()
 
     if menu.GAME_STARTED and not game.PAUSED:
-        process_keys(events)
-        # print(game.SCORES)
+        if game.SCORES[game.LEFT_PLAYER] < 10 and game.SCORES[game.RIGHT_PLAYER] < 10:
+            process_keys(events)
+            print(game.SCORES)
+
+        else:
+            game.reset(menu)
+            audio.Game().stop()
+            audio.Menu().play()
+
+
 

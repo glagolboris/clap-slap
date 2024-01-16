@@ -1,5 +1,6 @@
 import pygame
 import random
+import audio
 
 class Pause(pygame.sprite.Sprite):
     def __init__(self):
@@ -19,7 +20,7 @@ class Continue(Buttons, pygame.sprite.Sprite):
         super(Continue, self).__init__()
         self.image = pygame.image.load('data/buttons/continue.png')
         self.rect = self.image.get_rect()
-        self.rect.y += 150
+        self.rect.y += 100
         self.rect.x += 150
 
 class ToMenu(Buttons, pygame.sprite.Sprite):
@@ -27,7 +28,7 @@ class ToMenu(Buttons, pygame.sprite.Sprite):
         super(ToMenu, self).__init__()
         self.image = pygame.image.load('data/buttons/to_menu.png')
         self.rect = self.image.get_rect()
-        self.rect.y += 250
+        self.rect.y += 200
         self.rect.x += 150
 
 class PauseMenu(pygame.sprite.Sprite):
@@ -50,18 +51,82 @@ class PauseMenu(pygame.sprite.Sprite):
         pygame.display.flip()
 
 
+class Cross(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('data/cross.png')
+        self.rect = self.image.get_rect()
+
+        self.image = pygame.transform.scale(self.image, (20, 20))
+
+
+class Shackles(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('data/shackles.png')
+        self.rect = self.image.get_rect()
+        self.image = pygame.transform.rotate(self.image, 90)
+        self.image = pygame.transform.scale(self.image, (465, 265))
+
+class Fake_Defends:
+    def __init__(self):
+        self.cross_sprites = pygame.sprite.Group()
+        self.cross = Cross()
+        self.cross_sprites.add(self.cross)
+
+        self.shackles_sprites = pygame.sprite.Group()
+        self.shackles = Shackles()
+        self.shackles_sprites.add(self.shackles)
+
+    def render(self, game, screen):
+        if game.FAKE_DEFENDS <= 3:
+            self.cross.rect.y = 60
+
+            if game.players['fighter'] == game.RIGHT_PLAYER:
+                self.cross.rect.x = 45
+                for i in range(game.FAKE_DEFENDS):
+                    self.cross.rect.x += 25
+                    self.cross_sprites.update()
+                    self.cross_sprites.draw(screen)
+                    pygame.display.flip()
+
+
+            elif game.players['fighter'] == game.LEFT_PLAYER:
+                self.cross.rect.x = 500
+                for i in range(game.FAKE_DEFENDS):
+                    self.cross.rect.x += 25
+                    self.cross_sprites.update()
+                    self.cross_sprites.draw(screen)
+                    pygame.display.flip()
+
+        if game.FAKE_DEFENDS >= 3:
+            audio.Bell().play()
+            self.shackles_render(game, screen)
+
+
+    def shackles_render(self, game, screen):
+        self.shackles.rect.y = 255
+        if game.players['fighter'] == game.RIGHT_PLAYER:
+            self.shackles.rect.x = -160
+
+
+        elif game.players['fighter'] == game.LEFT_PLAYER:
+            self.shackles.rect.x = 600
+
+        self.shackles_sprites.update()
+        self.shackles_sprites.draw(screen)
+        pygame.display.flip()
 
 
 
 
 class Game:
-    players = {'fighter': None}
     LEFT_PLAYER = 'left_player'
     RIGHT_PLAYER = 'right_player'
-    SCORES = {LEFT_PLAYER: 0, RIGHT_PLAYER: 0}
-    PAUSED = False
 
     def __init__(self):
+        self.reset()
+
         from hands import Hands
         self.hands = Hands()
 
@@ -69,6 +134,18 @@ class Game:
 
         pause = Pause()
         self.all_sprites.add(pause)
+
+    def reset(self, menu=None):
+        self.players = {'fighter': None}
+        self.SCORES = {self.LEFT_PLAYER: 0, self.RIGHT_PLAYER: 0}
+        self.PAUSED = False
+        self.FAKE_DEFENDS = 0
+        self.TRUE_ATTACKS = 0
+
+        if menu:
+            menu.GAME_STARTED = False
+            menu.SETTINGS_STARTED = False
+            menu.TO_MENU = True
 
 
 
