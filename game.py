@@ -2,6 +2,17 @@ import pygame
 import random
 import audio
 
+class Score:
+    def __init__(self):
+        self.font = pygame.font.SysFont('Comic Sans MS', 30)
+
+    def render(self, game, screen):
+        self.left_player = self.font.render(str(game.SCORES[game.LEFT_PLAYER]), False, (240, 207, 43))
+        self.right_player = self.font.render(str(game.SCORES[game.RIGHT_PLAYER]), False, (240, 207, 43))
+        screen.blit(self.left_player, (225, 50))
+        screen.blit(self.right_player, (475, 50))
+
+
 
 class Pause(pygame.sprite.Sprite):
     def __init__(self):
@@ -239,5 +250,6 @@ class Game:
             self.if_game(game, screen)
 
     def if_game(self, game, screen):
+        # Score().render(game, screen)
         if game.TRUE_ATTACKS >= 3:
             Roll().render(game, screen)

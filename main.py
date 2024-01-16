@@ -3,7 +3,7 @@ from menu import MainMenu as menu_mainMenu
 from menu import Settings as menu_settings
 from menu import Start as menu_start
 from settings import Back
-from game import Pause, Continue, ToMenu
+from game import Pause, Continue, ToMenu, Score
 from game import Game
 from game import PauseMenu
 import audio
@@ -70,6 +70,7 @@ def process_keys(events):
                         game.SCORES[game.RIGHT_PLAYER] += 1
 
                     game.FAKE_DEFENDS = 0
+                    Score().render(game, screen)
 
                 if game.players['fighter'] == game.LEFT_PLAYER:
                     hands.left_hand.attack(hands, screen, game=game)
@@ -80,6 +81,11 @@ def process_keys(events):
                     else:
                         game.TRUE_ATTACKS += 1
                         game.SCORES[game.LEFT_PLAYER] += 1
+
+                    Score().render(game, screen)
+
+            Score().render(game, screen)
+
 
 
 
@@ -106,6 +112,8 @@ def process_keys(events):
                     game.FAKE_DEFENDS += 1
                     fd.render(game, screen)
 
+            Score().render(game, screen)
+
 
         elif pygame.K_LSHIFT in current_keys:
             if game.players['fighter'] == game.LEFT_PLAYER:
@@ -130,7 +138,10 @@ def process_keys(events):
                     game.FAKE_DEFENDS += 1
                     fd.render(game, screen)
 
+            Score().render(game, screen)
+
         last_key_time = current_time
+
 
 
 while running:

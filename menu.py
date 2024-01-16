@@ -32,6 +32,13 @@ class Settings(Sett_Buttons, pygame.sprite.Sprite):
         self.rect.y += 400
         self.rect.x += 150
 
+class Exit(Sett_Buttons, pygame.sprite.Sprite):
+    def __init__(self):
+        super(Settings, self).__init__()
+        self.image = pygame.image.load('data/buttons/settings.png')
+        self.rect = self.image.get_rect()
+        self.rect.y += 500
+        self.rect.x += 150
 
 class MainMenu:
     GAME_STARTED = False
