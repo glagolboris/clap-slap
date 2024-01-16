@@ -144,6 +144,8 @@ while running:
                             game.PAUSED = False
                             screen.fill('black')
                             game.render(screen, attack_change=False)
+                            if game.FAKE_DEFENDS >= 3:
+                                fd.render(game, screen)
                             pygame.display.flip()
 
                         if ToMenu().rect.collidepoint(event.pos):
