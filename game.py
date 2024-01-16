@@ -4,13 +4,13 @@ import audio
 
 class Score:
     def __init__(self):
-        self.font = pygame.font.Font('data/Realest-Extended.otf', 50)
+        self.font = pygame.font.Font('data/Aguante-Regular.otf', 50)
 
     def render(self, game, screen):
         self.left_player = self.font.render(str(game.SCORES[game.LEFT_PLAYER]), False, (240, 207, 43))
         self.right_player = self.font.render(str(game.SCORES[game.RIGHT_PLAYER]), False, (240, 207, 43))
-        screen.blit(self.left_player, (275, 70))
-        screen.blit(self.right_player, (375, 70))
+        screen.blit(self.left_player, (245, 70))
+        screen.blit(self.right_player, (425, 70))
 
 
 
