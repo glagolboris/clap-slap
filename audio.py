@@ -1,7 +1,9 @@
 import pygame
 
+
 class Main:
     MUSIC_PLAYED = False
+
 
 class Menu:
     def __init__(self):
@@ -13,6 +15,7 @@ class Menu:
 
     def stop(self):
         pygame.mixer_music.pause()
+
 
 class Game:
     def play(self):

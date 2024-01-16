@@ -2,6 +2,7 @@ import pygame
 import random
 import audio
 
+
 class Pause(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -10,6 +11,7 @@ class Pause(pygame.sprite.Sprite):
         self.rect.x += 324
         self.rect.y += 10
         self.image = pygame.transform.scale(self.image, (50, 50))
+
 
 class Buttons:
     pass
@@ -23,6 +25,7 @@ class Continue(Buttons, pygame.sprite.Sprite):
         self.rect.y += 100
         self.rect.x += 150
 
+
 class ToMenu(Buttons, pygame.sprite.Sprite):
     def __init__(self):
         super(ToMenu, self).__init__()
@@ -30,6 +33,7 @@ class ToMenu(Buttons, pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y += 200
         self.rect.x += 150
+
 
 class PauseMenu(pygame.sprite.Sprite):
     def __init__(self):
@@ -39,9 +43,6 @@ class PauseMenu(pygame.sprite.Sprite):
         self.all_sprites.add(continue_bttn)
         self.all_sprites.add(to_menu)
         self.all_sprites.update()
-
-
-
 
     def menu_render(self, screen):
         overlay_surface = pygame.Surface((700, 700), pygame.SRCALPHA)
@@ -67,6 +68,7 @@ class Shackles(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.image = pygame.transform.rotate(self.image, 90)
         self.image = pygame.transform.scale(self.image, (465, 265))
+
 
 class Fake_Defends:
     def __init__(self):
@@ -103,7 +105,6 @@ class Fake_Defends:
             audio.Bell().play()
             self.shackles_render(game, screen)
 
-
     def shackles_render(self, game, screen):
         self.shackles.rect.y = 255
         if game.players['fighter'] == game.RIGHT_PLAYER:
@@ -116,8 +117,6 @@ class Fake_Defends:
         self.shackles_sprites.update()
         self.shackles_sprites.draw(screen)
         pygame.display.flip()
-
-
 
 
 class Game:
@@ -146,9 +145,6 @@ class Game:
             menu.GAME_STARTED = False
             menu.SETTINGS_STARTED = False
             menu.TO_MENU = True
-
-
-
 
     def sprites_render(self, screen):
         self.all_sprites.update()
@@ -212,6 +208,3 @@ class Game:
     def render(self, screen, attack_change=True):
         screen.fill(pygame.Color('black'))
         self.fighter_defender(screen, attack_change)
-
-
-

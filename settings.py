@@ -1,5 +1,6 @@
 import pygame
 
+
 class Logo(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -7,6 +8,7 @@ class Logo(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y += 10
         self.rect.x += 150
+
 
 class Back(pygame.sprite.Sprite):
     def __init__(self):
@@ -31,4 +33,3 @@ class Settings:
         screen.fill(pygame.Color('#7D1424'))
         self.all_sprites.update()
         self.all_sprites.draw(screen)
-

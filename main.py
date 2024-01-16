@@ -14,11 +14,13 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 running = True
 from hands import Hands
+
 game = Game()
 hands = Hands()
 menu = menu_mainMenu()
 
 from game import Fake_Defends
+
 fd = Fake_Defends()
 # game.render(screen)
 pygame.display.flip()
@@ -46,10 +48,34 @@ def process_keys(events):
 
     if current_time - last_key_time >= key_delay:
         if pygame.K_LSHIFT in current_keys and pygame.K_RSHIFT in current_keys:
-            game.FAKE_DEFENDS = 0
-            game.TRUE_ATTACKS = 0
-            hands.attack_and_defend(screen, game.players['fighter'])
-            game.render(screen)
+            if game.FAKE_DEFENDS < 3:
+                game.FAKE_DEFENDS = 0
+                game.TRUE_ATTACKS = 0
+                hands.attack_and_defend(screen, game.players['fighter'])
+                game.render(screen)
+
+            else:
+                if game.players['fighter'] == game.RIGHT_PLAYER:
+                    hands.right_hand.attack(hands, screen)
+                    if game.TRUE_ATTACKS == 3:
+                        game.SCORES[game.RIGHT_PLAYER] += 2
+
+                    else:
+                        game.TRUE_ATTACKS += 1
+                        game.SCORES[game.RIGHT_PLAYER] += 1
+
+                    game.FAKE_DEFENDS = 0
+
+                if game.players['fighter'] == game.LEFT_PLAYER:
+                    hands.left_hand.attack(hands, screen)
+                    if game.TRUE_ATTACKS == 3:
+                        game.SCORES[game.LEFT_PLAYER] += 2
+
+                    else:
+                        game.TRUE_ATTACKS += 1
+                        game.SCORES[game.LEFT_PLAYER] += 1
+
+                    game.FAKE_DEFENDS = 0
 
 
 
@@ -90,9 +116,8 @@ def process_keys(events):
                     game.FAKE_DEFENDS += 1
                     fd.render(game, screen)
 
-
-
         last_key_time = current_time
+
 
 while running:
     events = pygame.event.get()
@@ -166,6 +191,7 @@ while running:
                     if menu_settings().rect.collidepoint(event.pos):
                         audio.Clicked().play()
                         import settings
+
                         settings.Settings().render(screen)
                         menu.SETTINGS_STARTED = True
                         menu.TO_MENU = False
@@ -182,6 +208,3 @@ while running:
             game.reset(menu)
             audio.Game().stop()
             audio.Menu().play()
-
-
-
