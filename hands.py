@@ -158,6 +158,7 @@ class RightHand(pygame.sprite.Sprite, Hands):
             self.rect.x -= 21
             self.render(screen, hands, role='attack', game=game)
 
+
         for __ in range(10):
             self.rect.x += 21
             self.render(screen, hands, role='attack', game=game)
