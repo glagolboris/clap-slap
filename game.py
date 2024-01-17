@@ -91,7 +91,7 @@ class Fake_Defends:
         self.shackles = Shackles()
         self.shackles_sprites.add(self.shackles)
 
-    def render(self, game, screen):
+    def render(self, game, screen, sounds):
         if game.FAKE_DEFENDS <= 3:
             self.cross.rect.y = 60
 
@@ -113,7 +113,7 @@ class Fake_Defends:
                     pygame.display.flip()
 
         if game.FAKE_DEFENDS >= 3:
-            audio.Bell().play()
+            sounds.bell.play()
             self.shackles_render(game, screen)
 
     def shackles_render(self, game, screen):

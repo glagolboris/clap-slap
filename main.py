@@ -2,11 +2,15 @@ import pygame
 from menu import MainMenu as menu_mainMenu
 from menu import Settings as menu_settings
 from menu import Start as menu_start
+from menu import Exit as menu_exit
 from settings import Back
+from settings import Settings
+import settings
 from game import Pause, Continue, ToMenu, Score
 from game import Game
 from game import PauseMenu
 import audio
+from audio import Music, Sounds
 
 pygame.init()
 size = width, height = 700, 700
@@ -15,9 +19,15 @@ clock = pygame.time.Clock()
 running = True
 from hands import Hands
 
+sounds = Sounds()
+music = Music()
+
 game = Game()
 hands = Hands()
 menu = menu_mainMenu()
+sett = Settings(sounds_=sounds, music_=music)
+
+
 
 from game import Fake_Defends
 fd = Fake_Defends()
@@ -53,12 +63,12 @@ def process_keys(events):
             if game.FAKE_DEFENDS < 3:
                 game.FAKE_DEFENDS = 0
                 game.TRUE_ATTACKS = 0
-                hands.attack_and_defend(screen, game.players['fighter'])
+                hands.attack_and_defend(screen, game.players['fighter'], sounds=sounds)
                 game.render(screen, game=game)
 
             else:
                 if game.players['fighter'] == game.RIGHT_PLAYER:
-                    hands.right_hand.attack(hands, screen, game=game)
+                    hands.right_hand.attack(hands, screen, game=game, sounds=sounds)
                     if game.TRUE_ATTACKS >= 3:
                         roll.render(game, screen)
                         game.SCORES[game.RIGHT_PLAYER] += 2
@@ -73,7 +83,7 @@ def process_keys(events):
                     Score().render(game, screen)
 
                 if game.players['fighter'] == game.LEFT_PLAYER:
-                    hands.left_hand.attack(hands, screen, game=game)
+                    hands.left_hand.attack(hands, screen, game=game, sounds=sounds)
                     if game.TRUE_ATTACKS >= 3:
                         game.SCORES[game.LEFT_PLAYER] += 2
                         game.TRUE_ATTACKS += 1
@@ -91,7 +101,7 @@ def process_keys(events):
 
         elif pygame.K_RSHIFT in current_keys:
             if game.players['fighter'] == game.RIGHT_PLAYER:
-                hands.right_hand.attack(hands, screen, game=game)
+                hands.right_hand.attack(hands, screen, game=game, sounds=sounds)
                 if game.TRUE_ATTACKS == 3:
                     game.SCORES[game.RIGHT_PLAYER] += 2
                     game.TRUE_ATTACKS += 1
@@ -104,20 +114,20 @@ def process_keys(events):
 
                 if game.TRUE_ATTACKS == 3:
                     roll.render(game, screen)
-                    audio.Bang().play()
+                    sounds.bang.play()
 
             else:
                 if game.FAKE_DEFENDS < 3:
-                    hands.right_hand.defend(hands, screen, game=game)
+                    hands.right_hand.defend(hands, screen, game=game, sounds=sounds)
                     game.FAKE_DEFENDS += 1
-                    fd.render(game, screen)
+                    fd.render(game, screen, sounds)
 
             Score().render(game, screen)
 
 
         elif pygame.K_LSHIFT in current_keys:
             if game.players['fighter'] == game.LEFT_PLAYER:
-                hands.left_hand.attack(hands, screen, game=game)
+                hands.left_hand.attack(hands, screen, game=game, sounds=sounds)
                 if game.TRUE_ATTACKS >= 3:
                     game.SCORES[game.LEFT_PLAYER] += 2
                     game.TRUE_ATTACKS += 1
@@ -130,13 +140,13 @@ def process_keys(events):
 
                 if game.TRUE_ATTACKS == 3:
                     roll.render(game, screen)
-                    audio.Bang().play()
+                    sounds.bang.play()
 
             else:
                 if game.FAKE_DEFENDS < 3:
-                    hands.left_hand.defend(hands, screen, game=game)
+                    hands.left_hand.defend(hands, screen, game=game, sounds=sounds)
                     game.FAKE_DEFENDS += 1
-                    fd.render(game, screen)
+                    fd.render(game, screen, sounds)
 
             Score().render(game, screen)
 
@@ -155,8 +165,8 @@ while running:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         if Pause().rect.collidepoint(event.pos):
-                            audio.Game().stop()
-                            audio.Clicked().play()
+                            music.game.stop()
+                            sounds.clicked.play()
                             game.PAUSED = True
                             PauseMenu().menu_render(screen)
 
@@ -164,18 +174,18 @@ while running:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         if Continue().rect.collidepoint(event.pos):
-                            audio.Clicked().play()
-                            audio.Game().play()
+                            sounds.clicked.play()
+                            music.game.play()
                             game.PAUSED = False
                             screen.fill('black')
                             game.render(screen, attack_change=False, game=game)
                             if game.FAKE_DEFENDS >= 3:
-                                fd.render(game, screen)
+                                fd.render(game, screen, sounds)
                             pygame.display.flip()
 
                         if ToMenu().rect.collidepoint(event.pos):
-                            audio.Clicked().play()
-                            audio.Menu().play()
+                            sounds.clicked.play()
+                            music.menu.play()
                             menu.GAME_STARTED = False
                             game.reset(menu)
                             menu.TO_MENU = True
@@ -191,14 +201,44 @@ while running:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if Back().rect.collidepoint(event.pos):
-                        audio.Clicked().play()
-                        menu.SETTINGS_STARTED = False
-                        menu.TO_MENU = True
-                        menu.render(screen)
+                    if sett.window == 1:
+                        if Back().rect.collidepoint(event.pos):
+                            sounds.clicked.play()
+                            menu.SETTINGS_STARTED = False
+                            menu.TO_MENU = True
+                            menu.render(screen)
+
+                        if settings.SoundMenu().rect.collidepoint(event.pos):
+                            sounds.clicked.play()
+                            sett.window = 2
+                            sett.render(screen)
+
+                    elif sett.window == 2:
+                        if Back().rect.collidepoint(event.pos):
+                            sounds.clicked.play()
+                            sett.window = 1
+                            sett.render(screen)
+
+                        if settings.Music(music).rect.collidepoint(event.pos):
+                            sounds.clicked.play()
+                            music.volume = not music.volume
+                            if not music.volume:
+                                music.menu.stop()
+
+                            else:
+                                music.menu.play()
+
+                            sett.render(screen)
+
+                        if settings.Sounds(sounds).rect.collidepoint(event.pos):
+                            sounds.clicked.play()
+                            sounds.volume = not sounds.volume
+                            sett.render(screen)
+
+
         if menu.TO_MENU:
             if not audio_lab.MUSIC_PLAYED:
-                audio.Menu().play()
+                music.menu.play()
                 audio_lab.MUSIC_PLAYED = True
             menu.render(screen)
             pygame.display.flip()
@@ -207,19 +247,24 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if menu_start().rect.collidepoint(event.pos):
-                        audio.Clicked().play()
+                        sounds.clicked.play()
                         menu.GAME_STARTED = True
                         menu.TO_MENU = False
                         game.render(screen, game=game)
-                        audio.Menu().stop()
-                        audio.Game().play()
+                        music.menu.stop()
+                        music.game.play()
+
                     if menu_settings().rect.collidepoint(event.pos):
-                        audio.Clicked().play()
+                        sounds.clicked.play()
                         import settings
 
-                        settings.Settings().render(screen)
+                        sett.render(screen)
                         menu.SETTINGS_STARTED = True
                         menu.TO_MENU = False
+
+                    if menu_exit().rect.collidepoint(event.pos):
+                        sounds.clicked.play()
+                        running = False
 
         clock.tick(60)
         pygame.display.flip()
@@ -230,5 +275,5 @@ while running:
 
         else:
             game.reset(menu)
-            audio.Game().stop()
-            audio.Menu().play()
+            music.menu.stop()
+            music.menu.play()

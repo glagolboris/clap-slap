@@ -34,8 +34,8 @@ class Settings(Sett_Buttons, pygame.sprite.Sprite):
 
 class Exit(Sett_Buttons, pygame.sprite.Sprite):
     def __init__(self):
-        super(Settings, self).__init__()
-        self.image = pygame.image.load('data/buttons/settings.png')
+        super(Exit, self).__init__()
+        self.image = pygame.image.load('data/buttons/exit.png')
         self.rect = self.image.get_rect()
         self.rect.y += 500
         self.rect.x += 150
@@ -56,6 +56,9 @@ class MainMenu:
 
         sttngs_bttn = Settings()
         self.all_sprites.add(sttngs_bttn)
+
+        exit = Exit()
+        self.all_sprites.add(exit)
 
     def render(self, screen):
         screen.fill(pygame.Color('#7D1424'))
