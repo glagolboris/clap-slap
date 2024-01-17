@@ -53,6 +53,13 @@ class Sounds(pygame.sprite.Sprite):
         self.rect.y += 225
         self.rect.x += 150
 
+class EditNicknames(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('data/buttons/edit_nicknames.png')
+        self.rect = self.image.get_rect()
+        self.rect.y += 225
+        self.rect.x += 150
 
 class Settings:
     window = 1
@@ -64,14 +71,20 @@ class Settings:
     def sprites_init(self):
         self.window_1 = pygame.sprite.Group()
         self.window_2 = pygame.sprite.Group()
+        self.window_3 = pygame.sprite.Group()
 
         logo = Logo()
         self.window_1.add(logo)
         self.window_2.add(logo)
+        self.window_3.add(logo)
 
         back = Back()
         self.window_1.add(back)
         self.window_2.add(back)
+        self.window_3.add(back)
+
+        edit_nicknames = EditNicknames()
+        self.window_1.add(edit_nicknames)
 
         sound_menu = SoundMenu()
         self.window_1.add(sound_menu)
@@ -95,5 +108,9 @@ class Settings:
         elif self.window == 2:
             self.window_2.update()
             self.window_2.draw(screen)
+
+        elif self.window == 3:
+            self.window_3.update()
+            self.window_3.draw(screen)
 
         pygame.display.flip()

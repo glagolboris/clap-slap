@@ -213,6 +213,11 @@ while running:
                             sett.window = 2
                             sett.render(screen)
 
+                        if settings.EditNicknames().rect.collidepoint(event.pos):
+                            sounds.clicked.play()
+                            sett.window = 3
+                            sett.render(screen)
+
                     elif sett.window == 2:
                         if Back().rect.collidepoint(event.pos):
                             sounds.clicked.play()
@@ -233,6 +238,12 @@ while running:
                         if settings.Sounds(sounds).rect.collidepoint(event.pos):
                             sounds.clicked.play()
                             sounds.volume = not sounds.volume
+                            sett.render(screen)
+
+                    elif sett.window == 3:
+                        if Back().rect.collidepoint(event.pos):
+                            sounds.clicked.play()
+                            sett.window = 1
                             sett.render(screen)
 
 
