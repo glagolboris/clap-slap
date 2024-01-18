@@ -72,17 +72,24 @@ class InputBox:
             if self.rect.collidepoint(event.pos):
                 self.active = not self.active
             else:
-                self.active = False
-                if db_ and self.player == 1:
+                if self.player == 1:
                     db_.edit_ln(self.text)
 
-                elif db_ and self.player == 2:
+                elif self.player == 2:
                     db_.edit_rn(self.text)
+                self.active = False
+
 
             self.color = self.COLOR_ACTIVE if self.active else self.COLOR_INACTIVE
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
+                    if db_ and self.player == 1:
+                        db_.edit_ln(self.text)
+
+                    elif db_ and self.player == 2:
+                        db_.edit_rn(self.text)
+
                     self.active = False
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
@@ -107,8 +114,21 @@ class EditNicknames(pygame.sprite.Sprite):
         self.rect.y += 225
         self.rect.x += 150
 
+class Player1_Logo(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('data/player_1.png')
+        self.rect = self.image.get_rect()
+        self.rect.x += 10
+        self.rect.y += 190
 
-
+class Player2_Logo(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('data/player_2.png')
+        self.rect = self.image.get_rect()
+        self.rect.x += 10
+        self.rect.y += 390
 
 class Settings:
     window = 1
@@ -117,8 +137,8 @@ class Settings:
         self.music_ = music_
         self.sounds_ = sounds_
         self.database = database()
-        self.box_1 = InputBox(300, 200, 140, 75, text=self.database.get_ln(), player=1)
-        self.box_2 = InputBox(300, 400, 140, 75, text=self.database.get_rn(), player=2)
+        self.box_1 = InputBox(350, 200, 140, 75, text=self.database.get_ln(), player=1)
+        self.box_2 = InputBox(350, 400, 140, 75, text=self.database.get_rn(), player=2)
         self.boxes = [self.box_1, self.box_2]
 
 
@@ -148,10 +168,13 @@ class Settings:
 
         sounds = Sounds(music=self.sounds_)
         music = Music(music=self.music_)
-
         self.window_2.add(sounds)
         self.window_2.add(music)
 
+        player_1 = Player1_Logo()
+        player_2 = Player2_Logo()
+        self.window_3.add(player_1)
+        self.window_3.add(player_2)
 
 
     def render(self, screen):

@@ -16,9 +16,11 @@ class Base:
 
     def edit_ln(self, new_name):
         self.cursor.execute("UPDATE nicks SET lp_nick = ?", (new_name,))
+        self.connect.commit()
 
     def edit_rn(self, new_name):
         self.cursor.execute("UPDATE nicks SET rp_nick = ?", (new_name,))
+        self.connect.commit()
 
     def get_ln(self):
         lst = self.cursor.execute("SELECT lp_nick FROM nicks").fetchall()
@@ -40,5 +42,6 @@ class Base:
     def get_page(self, num):
         num -= 1
         lst = self.cursor.execute("SELECT * FROM scores").fetchall()
+
         result = lst[num * 5:num * 5 + 5]
         return result
