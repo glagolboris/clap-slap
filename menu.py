@@ -44,6 +44,7 @@ class MainMenu:
     GAME_STARTED = False
     SETTINGS_STARTED = False
     TO_MENU = True
+    WINNER_WINDOW = False
 
     def __init__(self):
         self.all_sprites = pygame.sprite.Group()

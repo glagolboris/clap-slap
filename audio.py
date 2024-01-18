@@ -16,6 +16,7 @@ class Sounds:
         self.bang = self.Bang(self)
 
 
+
     class Clicked:
         def __init__(self, sounds):
             self.sound = pygame.mixer.Sound("data/audio/clicked.wav")
@@ -76,6 +77,7 @@ class Music:
     def __init__(self):
         self.menu = self.Menu(self)
         self.game = self.Game(self)
+        self.winner = self.Winner(self)
 
     class Menu:
         def __init__(self, music):
@@ -96,6 +98,18 @@ class Music:
         def play(self):
             if self.music.volume:
                 pygame.mixer_music.load('data/audio/game.mp3')
+                pygame.mixer_music.play(-1)
+
+        def stop(self):
+            pygame.mixer_music.stop()
+
+    class Winner:
+        def __init__(self, music):
+            self.music = music
+
+        def play(self):
+            if self.music.volume:
+                pygame.mixer_music.load('data/audio/winner.mp3')
                 pygame.mixer_music.play(-1)
 
         def stop(self):

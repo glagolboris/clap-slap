@@ -1,3 +1,5 @@
+import time
+
 import pygame
 from menu import MainMenu as menu_mainMenu
 from menu import Settings as menu_settings
@@ -12,6 +14,8 @@ from game import PauseMenu
 import audio
 from audio import Music, Sounds
 from db import Base
+import winner_window
+from winner_window import Main as winner_w
 
 pygame.init()
 size = width, height = 700, 700
@@ -31,9 +35,11 @@ sett = Settings(sounds_=sounds, music_=music)
 database = Base()
 
 from game import Fake_Defends
+
 fd = Fake_Defends()
 
 from game import Roll
+
 roll = Roll()
 # game.render(screen)
 pygame.display.flip()
@@ -44,6 +50,7 @@ current_keys = set()
 audio_lab = audio.Main()
 
 box_typer = False
+
 
 def process_keys(events):
     global current_keys
@@ -153,7 +160,6 @@ def process_keys(events):
             Score().render(game, screen)
 
         last_key_time = current_time
-
 
 
 while running:
@@ -275,6 +281,17 @@ while running:
                         box.draw(screen)
                         pygame.display.flip()
 
+        if menu.WINNER_WINDOW:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if winner_window.BackToMenu().rect.collidepoint(event.pos):
+                        sounds.clicked.play()
+                        menu.WINNER_WINDOW = False
+                        menu.TO_MENU = True
+                        music.winner.stop()
+                        music.menu.play()
+                        game.reset(menu=menu)
+                        menu.render(screen)
 
 
         if menu.TO_MENU:
@@ -307,6 +324,9 @@ while running:
                         sounds.clicked.play()
                         running = False
 
+
+
+
         clock.tick(60)
         pygame.display.flip()
 
@@ -329,6 +349,10 @@ while running:
             process_keys(events)
 
         else:
-            game.reset(menu)
-            music.menu.stop()
-            music.menu.play()
+            menu.GAME_STARTED = False
+            menu.WINNER_WINDOW = True
+            music.game.stop()
+            music.winner.play()
+            winner_w(game.SCORES, database.get_ln(), database.get_rn()).render(screen)
+
+
