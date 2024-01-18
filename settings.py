@@ -57,26 +57,33 @@ class InputBox:
     pygame.init()
     COLOR_INACTIVE = pygame.Color('lightskyblue3')
     COLOR_ACTIVE = pygame.Color('dodgerblue2')
-    FONT = pygame.font.Font(None, 32)
+    FONT = pygame.font.SysFont('Comic Sans MS', 48)
 
-    def __init__(self, x, y, w, h, text=''):
+    def __init__(self, x, y, w, h, text='', player=None):
         self.rect = pygame.Rect(x, y, w, h)
         self.color = self.COLOR_INACTIVE
         self.text = text
         self.txt_surface = self.FONT.render(text, True, self.color)
         self.active = False
+        self.player = player
 
-    def handle_event(self, event):
+    def handle_event(self, event, db_=None):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 self.active = not self.active
             else:
                 self.active = False
+                if db_ and self.player == 1:
+                    db_.edit_ln(self.text)
+
+                elif db_ and self.player == 2:
+                    db_.edit_rn(self.text)
+
             self.color = self.COLOR_ACTIVE if self.active else self.COLOR_INACTIVE
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
-                    self.text = ''
+                    self.active = False
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
@@ -110,8 +117,8 @@ class Settings:
         self.music_ = music_
         self.sounds_ = sounds_
         self.database = database()
-        self.box_1 = InputBox(300, 200, 340, 32, text=self.database.get_ln())
-        self.box_2 = InputBox(300, 400, 340, 32, text=self.database.get_rn())
+        self.box_1 = InputBox(300, 200, 140, 75, text=self.database.get_ln(), player=1)
+        self.box_2 = InputBox(300, 400, 140, 75, text=self.database.get_rn(), player=2)
         self.boxes = [self.box_1, self.box_2]
 
 
@@ -162,9 +169,9 @@ class Settings:
         elif self.window == 3:
             self.window_3.update()
             self.window_3.draw(screen)
-            self.box_1.draw(screen)
-            self.box_2.draw(screen)
+
+            for box in self.boxes:
+                box.update()
+                box.draw(screen)
 
 
-
-        pygame.display.flip()

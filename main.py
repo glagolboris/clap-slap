@@ -43,6 +43,7 @@ current_keys = set()
 
 audio_lab = audio.Main()
 
+box_typer = False
 
 def process_keys(events):
     global current_keys
@@ -245,15 +246,27 @@ while running:
                             sett.render(screen)
 
             elif sett.window == 3:
+                box_typer = True
                 if event.type == pygame.QUIT:
                     running = False
-                for box in sett.boxes:
-                    box.handle_event(event)
 
-                if Back().rect.collidepoint(event.pos):
-                    sounds.clicked.play()
-                    sett.window = 1
-                    sett.render(screen)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        if Back().rect.collidepoint(event.pos):
+                            box_typer = False
+                            sounds.clicked.play()
+                            sett.window = 1
+                            screen.fill('black')
+                            sett.render(screen)
+                            pygame.display.flip()
+
+                if box_typer:
+                    for box in sett.boxes:
+                        box.handle_event(event, db_=database)
+                        box.update()
+                        box.draw(screen)
+                        pygame.display.flip()
+
 
 
         if menu.TO_MENU:
@@ -288,11 +301,20 @@ while running:
 
         clock.tick(60)
         pygame.display.flip()
-    if menu.SETTINGS_STARTED and sett.window == 3:
+
+    if box_typer:
         for box in sett.boxes:
             box.update()
             box.draw(screen)
             pygame.display.flip()
+
+        sett.render(screen)
+
+        for box in sett.boxes:
+            box.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
 
     if menu.GAME_STARTED and not game.PAUSED:
         if game.SCORES[game.LEFT_PLAYER] < 10 and game.SCORES[game.RIGHT_PLAYER] < 10:
