@@ -11,6 +11,7 @@ from game import Game
 from game import PauseMenu
 import audio
 from audio import Music, Sounds
+from db import Base
 
 pygame.init()
 size = width, height = 700, 700
@@ -27,7 +28,7 @@ hands = Hands()
 menu = menu_mainMenu()
 sett = Settings(sounds_=sounds, music_=music)
 
-
+database = Base()
 
 from game import Fake_Defends
 fd = Fake_Defends()
@@ -196,12 +197,11 @@ while running:
 
 
         elif menu.SETTINGS_STARTED:
-
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    if sett.window == 1:
+            if sett.window == 1:
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
                         if Back().rect.collidepoint(event.pos):
                             sounds.clicked.play()
                             menu.SETTINGS_STARTED = False
@@ -218,7 +218,11 @@ while running:
                             sett.window = 3
                             sett.render(screen)
 
-                    elif sett.window == 2:
+            elif sett.window == 2:
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
                         if Back().rect.collidepoint(event.pos):
                             sounds.clicked.play()
                             sett.window = 1
@@ -240,11 +244,16 @@ while running:
                             sounds.volume = not sounds.volume
                             sett.render(screen)
 
-                    elif sett.window == 3:
-                        if Back().rect.collidepoint(event.pos):
-                            sounds.clicked.play()
-                            sett.window = 1
-                            sett.render(screen)
+            elif sett.window == 3:
+                if event.type == pygame.QUIT:
+                    running = False
+                for box in sett.boxes:
+                    box.handle_event(event)
+
+                if Back().rect.collidepoint(event.pos):
+                    sounds.clicked.play()
+                    sett.window = 1
+                    sett.render(screen)
 
 
         if menu.TO_MENU:
@@ -279,6 +288,11 @@ while running:
 
         clock.tick(60)
         pygame.display.flip()
+    if menu.SETTINGS_STARTED and sett.window == 3:
+        for box in sett.boxes:
+            box.update()
+            box.draw(screen)
+            pygame.display.flip()
 
     if menu.GAME_STARTED and not game.PAUSED:
         if game.SCORES[game.LEFT_PLAYER] < 10 and game.SCORES[game.RIGHT_PLAYER] < 10:

@@ -1,5 +1,5 @@
 import pygame
-
+from db import Base as database
 
 class Logo(pygame.sprite.Sprite):
     def __init__(self):
@@ -53,6 +53,45 @@ class Sounds(pygame.sprite.Sprite):
         self.rect.y += 225
         self.rect.x += 150
 
+class InputBox:
+    pygame.init()
+    COLOR_INACTIVE = pygame.Color('lightskyblue3')
+    COLOR_ACTIVE = pygame.Color('dodgerblue2')
+    FONT = pygame.font.Font(None, 32)
+
+    def __init__(self, x, y, w, h, text=''):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.color = self.COLOR_INACTIVE
+        self.text = text
+        self.txt_surface = self.FONT.render(text, True, self.color)
+        self.active = False
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.active = not self.active
+            else:
+                self.active = False
+            self.color = self.COLOR_ACTIVE if self.active else self.COLOR_INACTIVE
+        if event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_RETURN:
+                    self.text = ''
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+                self.txt_surface = self.FONT.render(self.text, True, self.color)
+
+    def update(self):
+        width = max(200, self.txt_surface.get_width()+10)
+        self.rect.w = width
+
+    def draw(self, screen):
+        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        pygame.draw.rect(screen, self.color, self.rect, 2)
+
+
 class EditNicknames(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -61,14 +100,25 @@ class EditNicknames(pygame.sprite.Sprite):
         self.rect.y += 225
         self.rect.x += 150
 
+
+
+
 class Settings:
     window = 1
 
     def __init__(self, music_, sounds_):
         self.music_ = music_
         self.sounds_ = sounds_
+        self.database = database()
+        self.box_1 = InputBox(300, 200, 340, 32, text=self.database.get_ln())
+        self.box_2 = InputBox(300, 400, 340, 32, text=self.database.get_rn())
+        self.boxes = [self.box_1, self.box_2]
+
 
     def sprites_init(self):
+
+
+
         self.window_1 = pygame.sprite.Group()
         self.window_2 = pygame.sprite.Group()
         self.window_3 = pygame.sprite.Group()
@@ -112,5 +162,9 @@ class Settings:
         elif self.window == 3:
             self.window_3.update()
             self.window_3.draw(screen)
+            self.box_1.draw(screen)
+            self.box_2.draw(screen)
+
+
 
         pygame.display.flip()

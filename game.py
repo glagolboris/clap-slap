@@ -143,7 +143,6 @@ class Roll:
         self.roll_group.add(self.roll)
 
     def render(self, game, screen):
-        print(True)
         self.roll.rect.y = 150
 
         if game.players['fighter'] == game.LEFT_PLAYER:

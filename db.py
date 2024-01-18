@@ -9,7 +9,10 @@ class Base:
         left_player TEXT, right_player TEXT, l_score bigint, r_score bigint)""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS nicks(
         lp_nick TEXT, rp_nick TEXT)""")
+        if len(self.cursor.execute("SELECT * FROM nicks").fetchall()) == 0:
+            self.cursor.execute('INSERT INTO nicks VALUES ("Игрок 1", "Игрок 2")')
         self.connect.commit()
+
 
     def edit_ln(self, new_name):
         self.cursor.execute("UPDATE nicks SET lp_nick = ?", (new_name,))
