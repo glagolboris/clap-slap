@@ -77,8 +77,16 @@ class InputBox:
 
                 elif self.player == 2:
                     db_.edit_rn(self.text)
+
                 self.active = False
 
+            self.txt_surface = self.FONT.render(self.text, True, self.color)
+
+            if db_ and self.player == 1:
+                db_.edit_ln(self.text)
+
+            elif db_ and self.player == 2:
+                db_.edit_rn(self.text)
 
             self.color = self.COLOR_ACTIVE if self.active else self.COLOR_INACTIVE
         if event.type == pygame.KEYDOWN:
@@ -97,12 +105,20 @@ class InputBox:
                     self.text += event.unicode
                 self.txt_surface = self.FONT.render(self.text, True, self.color)
 
-    def update(self):
+
+
+    def update(self, player=None, db_=None):
         width = max(200, self.txt_surface.get_width()+10)
         self.rect.w = width
+        if player and db_:
+            if player == 1:
+                self.text = db_.get_ln()
+
+            elif player == 2:
+                self.text = db_.get_rn()
 
     def draw(self, screen):
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        screen.blit(self.FONT.render(self.text, True, self.color), (self.rect.x+5, self.rect.y+5))
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
 
@@ -130,6 +146,15 @@ class Player2_Logo(pygame.sprite.Sprite):
         self.rect.x += 10
         self.rect.y += 390
 
+class ResetButton(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('data/reset.png')
+        self.rect = self.image.get_rect()
+        self.rect.x = 300
+        self.rect.y = 550
+        self.image = pygame.transform.scale(self.image, (100, 100))
+
 class Settings:
     window = 1
 
@@ -143,9 +168,6 @@ class Settings:
 
 
     def sprites_init(self):
-
-
-
         self.window_1 = pygame.sprite.Group()
         self.window_2 = pygame.sprite.Group()
         self.window_3 = pygame.sprite.Group()
@@ -173,8 +195,10 @@ class Settings:
 
         player_1 = Player1_Logo()
         player_2 = Player2_Logo()
+        reset = ResetButton()
         self.window_3.add(player_1)
         self.window_3.add(player_2)
+        self.window_3.add(reset)
 
 
     def render(self, screen):

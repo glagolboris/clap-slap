@@ -45,3 +45,7 @@ class Base:
 
         result = lst[num * 5:num * 5 + 5]
         return result
+
+    def add_score(self, l_nick, r_nick, l_score, r_score):
+        self.cursor.execute('''INSERT INTO scores VALUES(?, ?, ?, ?)''', (l_nick, r_nick, l_score, r_score))
+        self.connect.commit()

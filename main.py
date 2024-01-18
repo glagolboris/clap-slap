@@ -260,6 +260,14 @@ while running:
                             sett.render(screen)
                             pygame.display.flip()
 
+                        elif settings.ResetButton().rect.collidepoint(event.pos):
+                            sounds.clicked.play()
+                            database.edit_ln('Игрок 1')
+                            database.edit_rn('Игрок 2')
+                            sett.box_1.text = database.get_ln()
+                            sett.box_2.text = database.get_rn()
+                            sett.render(screen)
+
                 if box_typer:
                     for box in sett.boxes:
                         box.handle_event(event, db_=database)
