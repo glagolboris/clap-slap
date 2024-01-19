@@ -2,6 +2,7 @@ import pygame
 import random
 import audio
 
+
 class Score:
     def __init__(self):
         self.font = pygame.font.Font('data/Aguante-Regular.otf', 50)
@@ -11,7 +12,6 @@ class Score:
         self.right_player = self.font.render(str(game.SCORES[game.RIGHT_PLAYER]), False, (240, 207, 43))
         screen.blit(self.left_player, (245, 70))
         screen.blit(self.right_player, (425, 70))
-
 
 
 class Pause(pygame.sprite.Sprite):
@@ -129,11 +129,13 @@ class Fake_Defends:
         self.shackles_sprites.draw(screen)
         pygame.display.flip()
 
+
 class OnRoll(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('data/on_a_roll.png')
         self.rect = self.image.get_rect()
+
 
 class Roll:
     def __init__(self):
@@ -154,6 +156,7 @@ class Roll:
         self.roll_group.update()
         self.roll_group.draw(screen)
         pygame.display.flip()
+
 
 class Game:
     LEFT_PLAYER = 'left_player'
@@ -249,6 +252,5 @@ class Game:
             self.if_game(game, screen)
 
     def if_game(self, game, screen):
-        # Score().render(game, screen)
         if game.TRUE_ATTACKS >= 3:
             Roll().render(game, screen)

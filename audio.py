@@ -7,6 +7,7 @@ class Main:
 
 class Sounds:
     volume = True
+
     def __init__(self):
         self.clicked = self.Clicked(self)
         self.slap = self.Slap(self)
@@ -14,8 +15,6 @@ class Sounds:
         self.woosh_2 = self.Woosh2(self)
         self.bell = self.Bell(self)
         self.bang = self.Bang(self)
-
-
 
     class Clicked:
         def __init__(self, sounds):
@@ -74,6 +73,7 @@ class Sounds:
 
 class Music:
     volume = True
+
     def __init__(self):
         self.menu = self.Menu(self)
         self.game = self.Game(self)
@@ -95,6 +95,7 @@ class Music:
     class Game:
         def __init__(self, music):
             self.music = music
+
         def play(self):
             if self.music.volume:
                 pygame.mixer_music.load('data/audio/game.mp3')
@@ -114,9 +115,3 @@ class Music:
 
         def stop(self):
             pygame.mixer_music.stop()
-
-
-
-
-
-

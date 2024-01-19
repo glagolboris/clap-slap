@@ -1,10 +1,10 @@
 import time
-
 import pygame
 from menu import MainMenu as menu_mainMenu
 from menu import Settings as menu_settings
 from menu import Start as menu_start
 from menu import Exit as menu_exit
+from menu import Statisitc as menu_stat
 from settings import Back
 from settings import Settings
 import settings
@@ -16,6 +16,7 @@ from audio import Music, Sounds
 from db import Base
 import winner_window
 from winner_window import Main as winner_w
+import stats
 
 pygame.init()
 size = width, height = 700, 700
@@ -41,7 +42,6 @@ fd = Fake_Defends()
 from game import Roll
 
 roll = Roll()
-# game.render(screen)
 pygame.display.flip()
 last_key_time = 0
 key_delay = 150
@@ -50,6 +50,8 @@ current_keys = set()
 audio_lab = audio.Main()
 
 box_typer = False
+
+stat = stats.Main(database=database)
 
 
 def process_keys(events):
@@ -111,7 +113,7 @@ def process_keys(events):
         elif pygame.K_RSHIFT in current_keys:
             if game.players['fighter'] == game.RIGHT_PLAYER:
                 hands.right_hand.attack(hands, screen, game=game, sounds=sounds)
-                if game.TRUE_ATTACKS == 3:
+                if game.TRUE_ATTACKS >= 3:
                     game.SCORES[game.RIGHT_PLAYER] += 2
                     game.TRUE_ATTACKS += 1
 
@@ -163,6 +165,7 @@ def process_keys(events):
 
 
 while running:
+    clock.tick(100)
     events = pygame.event.get()
     for event in events:
         if menu.GAME_STARTED:
@@ -170,7 +173,7 @@ while running:
                 running = False
 
             if not game.PAUSED:
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         if Pause().rect.collidepoint(event.pos):
                             music.game.stop()
@@ -293,6 +296,41 @@ while running:
                         game.reset(menu=menu)
                         menu.render(screen)
 
+        if menu.STATISTIC:
+            if event.type == pygame.QUIT:
+                running = False
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if stats.Back().rect.collidepoint(event.pos):
+                        sounds.clicked.play()
+                        menu.STATISTIC = False
+                        menu.TO_MENU = True
+                        menu.render(screen)
+
+                    if stats.Next().rect.collidepoint(event.pos):
+                        if stat.next_page == True:
+                            sounds.clicked.play()
+                            stat.page += 1
+                            stat.render(screen)
+
+                    if stats.Previous().rect.collidepoint(event.pos):
+                        if stat.previous_page == True:
+                            sounds.clicked.play()
+                            stat.page -= 1
+                            stat.render(screen)
+
+                    if stats.Reset().rect.collidepoint(event.pos):
+                        if stat.clearing == True:
+                            sounds.clicked.play()
+                            database.delete_scores()
+                            stat.render(screen)
+
+                    if stats.Previous().rect.collidepoint(event.pos):
+                        if stat.previous_page == True:
+                            sounds.clicked.play()
+                            stat.page -= 1
+                            stat.render(screen)
 
         if menu.TO_MENU:
             if not audio_lab.MUSIC_PLAYED:
@@ -324,8 +362,12 @@ while running:
                         sounds.clicked.play()
                         running = False
 
-
-
+                    if menu_stat().rect.collidepoint(event.pos):
+                        sounds.clicked.play()
+                        menu.TO_MENU = False
+                        menu.STATISTIC = True
+                        stat.page = 1
+                        stat.render(screen)
 
         clock.tick(60)
         pygame.display.flip()
@@ -351,8 +393,8 @@ while running:
         else:
             menu.GAME_STARTED = False
             menu.WINNER_WINDOW = True
+            database.add_score(database.get_ln(), database.get_rn(), game.SCORES[game.LEFT_PLAYER],
+                               game.SCORES[game.RIGHT_PLAYER])
             music.game.stop()
             music.winner.play()
             winner_w(game.SCORES, database.get_ln(), database.get_rn()).render(screen)
-
-

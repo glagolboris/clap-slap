@@ -1,6 +1,7 @@
 import pygame
 from db import Base as database
 
+
 class Logo(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -18,6 +19,7 @@ class Back(pygame.sprite.Sprite):
         self.rect.y += 1
         self.rect.x += 600
 
+
 class SoundMenu(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -25,6 +27,7 @@ class SoundMenu(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y += 125
         self.rect.x += 150
+
 
 class Music(pygame.sprite.Sprite):
     def __init__(self, music):
@@ -52,6 +55,7 @@ class Sounds(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y += 225
         self.rect.x += 150
+
 
 class InputBox:
     pygame.init()
@@ -105,10 +109,8 @@ class InputBox:
                     self.text += event.unicode
                 self.txt_surface = self.FONT.render(self.text, True, self.color)
 
-
-
     def update(self, player=None, db_=None):
-        width = max(200, self.txt_surface.get_width()+10)
+        width = max(200, self.txt_surface.get_width() + 10)
         self.rect.w = width
         if player and db_:
             if player == 1:
@@ -118,7 +120,7 @@ class InputBox:
                 self.text = db_.get_rn()
 
     def draw(self, screen):
-        screen.blit(self.FONT.render(self.text, True, self.color), (self.rect.x+5, self.rect.y+5))
+        screen.blit(self.FONT.render(self.text, True, self.color), (self.rect.x + 5, self.rect.y + 5))
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
 
@@ -130,6 +132,7 @@ class EditNicknames(pygame.sprite.Sprite):
         self.rect.y += 225
         self.rect.x += 150
 
+
 class Player1_Logo(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -137,6 +140,7 @@ class Player1_Logo(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x += 10
         self.rect.y += 190
+
 
 class Player2_Logo(pygame.sprite.Sprite):
     def __init__(self):
@@ -146,6 +150,7 @@ class Player2_Logo(pygame.sprite.Sprite):
         self.rect.x += 10
         self.rect.y += 390
 
+
 class ResetButton(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -154,6 +159,7 @@ class ResetButton(pygame.sprite.Sprite):
         self.rect.x = 300
         self.rect.y = 550
         self.image = pygame.transform.scale(self.image, (100, 100))
+
 
 class Settings:
     window = 1
@@ -165,7 +171,6 @@ class Settings:
         self.box_1 = InputBox(350, 200, 140, 75, text=self.database.get_ln(), player=1)
         self.box_2 = InputBox(350, 400, 140, 75, text=self.database.get_rn(), player=2)
         self.boxes = [self.box_1, self.box_2]
-
 
     def sprites_init(self):
         self.window_1 = pygame.sprite.Group()
@@ -200,7 +205,6 @@ class Settings:
         self.window_3.add(player_2)
         self.window_3.add(reset)
 
-
     def render(self, screen):
         screen.fill(pygame.Color('#7D1424'))
         self.sprites_init()
@@ -220,5 +224,3 @@ class Settings:
             for box in self.boxes:
                 box.update()
                 box.draw(screen)
-
-

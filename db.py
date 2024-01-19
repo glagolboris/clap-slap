@@ -1,4 +1,5 @@
 import sqlite3
+import math
 
 
 class Base:
@@ -12,7 +13,6 @@ class Base:
         if len(self.cursor.execute("SELECT * FROM nicks").fetchall()) == 0:
             self.cursor.execute('INSERT INTO nicks VALUES ("Игрок 1", "Игрок 2")')
         self.connect.commit()
-
 
     def edit_ln(self, new_name):
         self.cursor.execute("UPDATE nicks SET lp_nick = ?", (new_name,))
@@ -37,15 +37,19 @@ class Base:
     def pages_count(self):
         lst = self.cursor.execute("SELECT * FROM scores").fetchall()
         self.connect.commit()
-        return len(lst) // 5
+        return math.ceil(len(lst) / 8)
 
     def get_page(self, num):
         num -= 1
-        lst = self.cursor.execute("SELECT * FROM scores").fetchall()
+        lst = self.cursor.execute("SELECT * FROM scores").fetchall()[::-1]
 
-        result = lst[num * 5:num * 5 + 5]
+        result = lst[num * 8:num * 8 + 8]
         return result
 
     def add_score(self, l_nick, r_nick, l_score, r_score):
         self.cursor.execute('''INSERT INTO scores VALUES(?, ?, ?, ?)''', (l_nick, r_nick, l_score, r_score))
+        self.connect.commit()
+
+    def delete_scores(self):
+        self.cursor.execute('''DELETE FROM scores''')
         self.connect.commit()

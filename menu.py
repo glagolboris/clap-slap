@@ -32,19 +32,31 @@ class Settings(Sett_Buttons, pygame.sprite.Sprite):
         self.rect.y += 400
         self.rect.x += 150
 
+
+class Statisitc(Sett_Buttons, pygame.sprite.Sprite):
+    def __init__(self):
+        super(Statisitc, self).__init__()
+        self.image = pygame.image.load('data/buttons/statisitc.png')
+        self.rect = self.image.get_rect()
+        self.rect.y += 500
+        self.rect.x += 150
+
+
 class Exit(Sett_Buttons, pygame.sprite.Sprite):
     def __init__(self):
         super(Exit, self).__init__()
         self.image = pygame.image.load('data/buttons/exit.png')
         self.rect = self.image.get_rect()
-        self.rect.y += 500
+        self.rect.y += 600
         self.rect.x += 150
+
 
 class MainMenu:
     GAME_STARTED = False
     SETTINGS_STARTED = False
     TO_MENU = True
     WINNER_WINDOW = False
+    STATISTIC = False
 
     def __init__(self):
         self.all_sprites = pygame.sprite.Group()
@@ -57,6 +69,9 @@ class MainMenu:
 
         sttngs_bttn = Settings()
         self.all_sprites.add(sttngs_bttn)
+
+        statistic = Statisitc()
+        self.all_sprites.add(statistic)
 
         exit = Exit()
         self.all_sprites.add(exit)
